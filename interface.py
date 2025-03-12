@@ -50,9 +50,36 @@ btn_Executar = tk.Button(frame_esquerda, text="Executar", command=lambda: print(
 btn_Executar.pack(pady=20)
 
 # ---- Área direita (Grid e Texto) ----
-frame_grid = tk.Frame(frame_direita, bg="white", width=600, height=400)
+frame_grid = tk.Frame(frame_direita, bg="white", width=900, height=600)
 frame_grid.pack(expand=True, fill="both", padx=20, pady=20)
-tk.Label(frame_grid, text="Área da grid (futura)", fg="gray", font=("Arial", 14)).place(relx=0.5, rely=0.5, anchor="center")
+
+# Criando um Canvas para desenhar a grid
+canvas = tk.Canvas(frame_grid, bg="white")
+canvas.pack(expand=True, fill="both")
+
+# Parâmetros da grid
+GRID_WIDTH = 20   # Largura
+GRID_HEIGHT = 20  # Altura
+CELL_SIZE = 30    # Tamanho de cada célula em pixels
+
+# Calculando a posição centralizada dentro do canvas
+canvas_width = GRID_WIDTH * CELL_SIZE
+canvas_height = GRID_HEIGHT * CELL_SIZE
+
+canvas.config(width=canvas_width, height=canvas_height)  # Define o tamanho fixo do canvas
+
+def desenhar_grid():
+    """Função para desenhar a grade no Canvas"""
+    for i in range(GRID_HEIGHT):
+        for j in range(GRID_WIDTH):
+            x1, y1 = j * CELL_SIZE, i * CELL_SIZE
+            x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
+            canvas.create_rectangle(x1, y1, x2, y2, outline="black")
+
+desenhar_grid()
+
+# Centralizando o canvas dentro do frame_grid
+canvas.place(relx=0.5, rely=0.5, anchor="center")
 
 # Campo de resultado
 label_resultado = tk.Label(frame_direita, text="Resultado aparecerá aqui", fg="blue", font=("Arial", 12, "bold"))
