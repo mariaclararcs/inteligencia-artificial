@@ -1,5 +1,6 @@
-from ListaDEnc import lista
+from lista_dup_encadeada import lista
 import funcoes_auxiliares as fa
+
 class busca(object):
 
     def amplitude(self, inicio, fim, mapa, dx, dy):
@@ -25,6 +26,7 @@ class busca(object):
         while not l1.vazio():
             # remove o primeiro da fila
             atual = l1.deletaPrimeiro()
+            # print(f"Visitando nó: {atual.estado}")
             x = atual.estado[0]
             y = atual.estado[1]
 
@@ -87,6 +89,7 @@ class busca(object):
         while not l1.vazio():
             # remove o primeiro da fila
             atual = l1.deletaUltimo()
+            # print(f"Visitando nó: {atual.estado}")
             x = atual.estado[0]
             y = atual.estado[1]
 
@@ -150,6 +153,7 @@ class busca(object):
             # remove o primeiro da fila
             atual = l1.deletaUltimo()
             if atual.nivel<limite:
+                # print(f"Visitando nó: {atual.estado}")
                 x = atual.estado[0]
                 y = atual.estado[1]
     
@@ -214,6 +218,7 @@ class busca(object):
                 # remove o primeiro da fila
                 atual = l1.deletaUltimo()
                 if atual.nivel<limite:
+                    # print(f"Visitando nó: {atual.estado}")
                     x = atual.estado[0]
                     y = atual.estado[1]
         
@@ -298,6 +303,7 @@ class busca(object):
                     
                 # remove o primeiro da fila
                 atual = l1.deletaPrimeiro()
+                # print(f"Visitando nó: {atual.estado}")
                 x = atual.estado[0]
                 y = atual.estado[1]
     
@@ -354,6 +360,7 @@ class busca(object):
                 
                 # remove o primeiro da fila
                 atual = l3.deletaPrimeiro()
+                # print(f"Visitando nó: {atual.estado}")
                 x = atual.estado[0]
                 y = atual.estado[1]
     

@@ -1,18 +1,23 @@
 import tkinter as tk
 from tkinter import ttk
 from funcoes_auxiliares import Gera_Problema_Grid_Fixo
+from busca_sem_pesos_grid import busca  # Importa a classe de busca
+
+# Criar uma instância da classe busca
+buscador = busca()
 
 # Carregar a grid do arquivo
 mapa = Gera_Problema_Grid_Fixo("exemplo_grid.txt")
-GRID_HEIGHT = len(mapa)  # Define a altura como o número de linhas
-GRID_WIDTH = len(mapa[0])  # Define a largura como o número de colunas
-CELL_SIZE = 30  # Tamanho de cada célula em pixels
+GRID_HEIGHT = len(mapa)
+GRID_WIDTH = len(mapa[0])
+CELL_SIZE = 30
 
+# Criar a janela principal
 janela = tk.Tk()
-janela.title("A-estrela")
+janela.title("Busca em Grafos")
 janela.state('zoomed')
 
-# Criando os frames principais com ajuste de largura
+# Criando os frames principais
 frame_esquerda = tk.Frame(janela, width=400)
 frame_esquerda.pack(side="left", fill="y")
 frame_esquerda.pack_propagate(False)
@@ -45,29 +50,21 @@ tk.Label(frame_inputs, text="Y:").grid(row=5, column=0, sticky="e", pady=5)
 entry_ObjetivoY = tk.Entry(frame_inputs)
 entry_ObjetivoY.grid(row=5, column=1, pady=5)
 
-# Dropdown
+# Dropdown para escolher o método de busca
 tk.Label(frame_inputs, text="Métodos:", font=("Arial", 12, "bold")).grid(row=6, column=0, columnspan=2, pady=10)
-opcoes = ["", "Amplitude", "Profundidade", "Profundidade Limitada", "Aprofundamento Iterativo", "Bidirecional"]
-dropdown = ttk.Combobox(frame_inputs, value=opcoes)
-dropdown.grid(row=7, column=0, columnspan=2, pady=5)
-dropdown.current(0)
+metodos = ["Amplitude", "Profundidade", "Profundidade Limitada", "Aprofundamento Iterativo", "Bidirecional"]
+metodo_selecionado = tk.StringVar()
+dropdown_metodo = ttk.Combobox(frame_inputs, textvariable=metodo_selecionado, values=metodos)
+dropdown_metodo.grid(row=7, column=0, columnspan=2, pady=5)
 
-# Função para capturar os valores inseridos pelo usuário
-def salvar_valores():
-    """Captura os valores dos inputs e salva em variáveis."""
-    inicio_x = entry_InicioX.get()
-    inicio_y = entry_InicioY.get()
-    objetivo_x = entry_ObjetivoX.get()
-    objetivo_y = entry_ObjetivoY.get()
-    metodo_escolhido = dropdown.get()
-
-    print(f"Início: ({inicio_x}, {inicio_y})")
-    print(f"Objetivo: ({objetivo_x}, {objetivo_y})")
-    print(f"Método escolhido: {metodo_escolhido}")
-
-# Botão
-btn_Executar = tk.Button(frame_esquerda, text="Executar", command=salvar_valores)
-btn_Executar.pack(pady=20)
+# Dicionário para mapear os métodos às funções
+metodos_busca = {
+    "Amplitude": buscador.amplitude,
+    "Profundidade": buscador.profundidade,
+    "Profundidade Limitada": buscador.prof_limitada,
+    "Aprofundamento Iterativo": buscador.aprof_iterativo,
+    "Bidirecional": buscador.bidirecional
+}
 
 # ---- Área direita (Grid e Texto) ----
 frame_grid = tk.Frame(frame_direita, bg="white")
@@ -77,22 +74,60 @@ frame_grid.pack(expand=True, fill="both", padx=20, pady=20)
 canvas = tk.Canvas(frame_grid, bg="white", width=GRID_WIDTH * CELL_SIZE, height=GRID_HEIGHT * CELL_SIZE)
 canvas.pack()
 
-def desenhar_grid():
-    """Função para desenhar a grade no Canvas de acordo com o arquivo"""
-    for i in range(GRID_HEIGHT):
-        for j in range(GRID_WIDTH):
-            x1, y1 = j * CELL_SIZE, i * CELL_SIZE
-            x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
-            cor = "black" if mapa[i][j] == 9 else "white"
-            canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill=cor)
+label_resultado = tk.Label(frame_direita, text="", font=("Arial", 12, "bold"), fg="blue")
+label_resultado.pack(pady=10)
+
+# Função para desenhar a grid
+def desenhar_grid(caminho=[], inicio=None, fim=None):
+    canvas.delete("all")
+    for y in range(GRID_HEIGHT):
+        for x in range(GRID_WIDTH):
+            cor = "white" if mapa[y][x] == 0 else "black"
+            if (x, y) in caminho:
+                cor = "green"  # Caminho encontrado
+            if (x, y) == inicio or (x, y) == fim:
+                cor = "yellow"  # Ponto inicial e final
+            canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, (x+1) * CELL_SIZE, (y+1) * CELL_SIZE, fill=cor, outline="gray")
 
 desenhar_grid()
 
 # Centralizando o canvas dentro do frame_grid
 canvas.place(relx=0.5, rely=0.5, anchor="center")
 
-# Campo de resultado
-label_resultado = tk.Label(frame_direita, text="Resultado aparecerá aqui", fg="blue", font=("Arial", 12, "bold"))
-label_resultado.pack(pady=10)
+# Função para chamar o método de busca correspondente
+def executar_busca():
+    metodo = metodo_selecionado.get()
+    
+    if metodo not in metodos_busca:
+        label_resultado.config(text="Selecione um método válido.")
+        return
+
+    try:
+        inicio = (int(entry_InicioX.get()), int(entry_InicioY.get()))
+        fim = (int(entry_ObjetivoX.get()), int(entry_ObjetivoY.get()))
+        dx, dy = GRID_WIDTH, GRID_HEIGHT
+
+        if metodo == "Profundidade Limitada":
+            limite = 10  # Defina o limite adequado
+            caminho = metodos_busca[metodo](inicio, fim, mapa, dx, dy, limite)
+        elif metodo == "Aprofundamento Iterativo":
+            lim_max = 20  # Defina o limite máximo adequado
+            caminho = metodos_busca[metodo](inicio, fim, mapa, dx, dy, lim_max)
+        else:
+            caminho = metodos_busca[metodo](inicio, fim, mapa, dx, dy)
+
+        if caminho:
+            desenhar_grid(caminho, inicio, fim)
+            label_resultado.config(text=f"Caminho encontrado: {caminho}")
+        else:
+            label_resultado.config(text="Nenhum caminho encontrado.")
+            desenhar_grid([], inicio, fim)
+    
+    except ValueError:
+        label_resultado.config(text="Erro: Certifique-se de que os valores de entrada são números válidos.")
+
+# Botão para executar a busca
+btn_executar = tk.Button(frame_inputs, text="Executar Busca", command=executar_busca)
+btn_executar.grid(row=8, column=0, columnspan=2, pady=20)
 
 janela.mainloop()

@@ -106,4 +106,5 @@ def sucessor_grid(x,y,dx,dy,mapa):
             linha.append(y+1)
             f.append(linha)
     
+    # print(f"Sucessores de ({x}, {y}): {f}")  # Adicionado print para depuração
     return f
