@@ -7,8 +7,7 @@ def Gera_Problema_Grid_Fixo(arquivo):
     mapa = []
     for str1 in f:
         str1 = str1.strip("\n")
-        #str1 = str1.split(",")
-        str1 = str1.split(";")
+        str1 = str1.split(",")
         int_str1 = []
         for s in str1:
             int_str1.append(int(s))

@@ -1,5 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
+from funcoes_auxiliares import Gera_Problema_Grid_Fixo
+
+# Carregar a grid do arquivo
+mapa = Gera_Problema_Grid_Fixo("exemplo_grid.txt")
+GRID_HEIGHT = len(mapa)  # Define a altura como o número de linhas
+GRID_WIDTH = len(mapa[0])  # Define a largura como o número de colunas
+CELL_SIZE = 30  # Tamanho de cada célula em pixels
 
 janela = tk.Tk()
 janela.title("A-estrela")
@@ -40,41 +47,44 @@ entry_ObjetivoY.grid(row=5, column=1, pady=5)
 
 # Dropdown
 tk.Label(frame_inputs, text="Métodos:", font=("Arial", 12, "bold")).grid(row=6, column=0, columnspan=2, pady=10)
-opcoes = ["", "Amplitude", "Profundidade Limitada", "Aprofundamento Iterativo", "Bidirecional", "Custo Uniforme", "Greedy"]
+opcoes = ["", "Amplitude", "Profundidade", "Profundidade Limitada", "Aprofundamento Iterativo", "Bidirecional"]
 dropdown = ttk.Combobox(frame_inputs, value=opcoes)
 dropdown.grid(row=7, column=0, columnspan=2, pady=5)
 dropdown.current(0)
 
+# Função para capturar os valores inseridos pelo usuário
+def salvar_valores():
+    """Captura os valores dos inputs e salva em variáveis."""
+    inicio_x = entry_InicioX.get()
+    inicio_y = entry_InicioY.get()
+    objetivo_x = entry_ObjetivoX.get()
+    objetivo_y = entry_ObjetivoY.get()
+    metodo_escolhido = dropdown.get()
+
+    print(f"Início: ({inicio_x}, {inicio_y})")
+    print(f"Objetivo: ({objetivo_x}, {objetivo_y})")
+    print(f"Método escolhido: {metodo_escolhido}")
+
 # Botão
-btn_Executar = tk.Button(frame_esquerda, text="Executar", command=lambda: print("Botão clicado"))
+btn_Executar = tk.Button(frame_esquerda, text="Executar", command=salvar_valores)
 btn_Executar.pack(pady=20)
 
 # ---- Área direita (Grid e Texto) ----
-frame_grid = tk.Frame(frame_direita, bg="white", width=900, height=600)
+frame_grid = tk.Frame(frame_direita, bg="white")
 frame_grid.pack(expand=True, fill="both", padx=20, pady=20)
 
 # Criando um Canvas para desenhar a grid
-canvas = tk.Canvas(frame_grid, bg="white")
-canvas.pack(expand=True, fill="both")
-
-# Parâmetros da grid
-GRID_WIDTH = 20   # Largura
-GRID_HEIGHT = 20  # Altura
-CELL_SIZE = 30    # Tamanho de cada célula em pixels
-
-# Calculando a posição centralizada dentro do canvas
-canvas_width = GRID_WIDTH * CELL_SIZE
-canvas_height = GRID_HEIGHT * CELL_SIZE
-
-canvas.config(width=canvas_width, height=canvas_height)  # Define o tamanho fixo do canvas
+canvas = tk.Canvas(frame_grid, bg="white", width=GRID_WIDTH * CELL_SIZE, height=GRID_HEIGHT * CELL_SIZE)
+canvas.pack()
 
 def desenhar_grid():
-    """Função para desenhar a grade no Canvas"""
+    """Função para desenhar a grade no Canvas de acordo com o arquivo"""
     for i in range(GRID_HEIGHT):
         for j in range(GRID_WIDTH):
             x1, y1 = j * CELL_SIZE, i * CELL_SIZE
             x2, y2 = x1 + CELL_SIZE, y1 + CELL_SIZE
-            canvas.create_rectangle(x1, y1, x2, y2, outline="black")
+            cor = "black" if mapa[i][j] == 9 else "white"
+            canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill=cor)
 
 desenhar_grid()
 
