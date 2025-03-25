@@ -1,14 +1,12 @@
-from node import No
+from node import Node 
 
-class lista(object):
+class listaDEnc(object):
     head = None
     tail = None
-    tam = 0
 
     # INSERE NO INÍCIO DA LISTA
-    def inserePrimeiro(self, st, ni, p):
-        novo_no = No(p, st, ni, None, None)
-        self.tam = self.tam + 1
+    def inserePrimeiro(self, st, v1, v2, p):
+        novo_no = Node(p, st, v1, v2, None, None)
         if self.head == None:
             self.tail = novo_no
             self.head = novo_no
@@ -18,9 +16,10 @@ class lista(object):
             self.head = novo_no
 
     # INSERE NO FIM DA LISTA
-    def insereUltimo(self, st, ni, p):
-        novo_no = No(p, st, ni, None, None)
-        self.tam = self.tam + 1
+    def insereUltimo(self, st, v1, v2, p):
+
+        novo_no = Node(p, st, v1, v2, None, None)
+
         if self.head is None:
             self.head = novo_no
             self.tail = novo_no
@@ -34,7 +33,6 @@ class lista(object):
         if self.head is None:
             return None
         else:
-            self.tam = self.tam - 1
             no = self.head
             self.head = self.head.proximo
             if self.head is not None:
@@ -49,7 +47,6 @@ class lista(object):
             return None
         else:
             no = self.tail
-            self.tam = self.tam - 1
             self.tail = self.tail.anterior
             if self.tail is not None:
                 self.tail.proximo = None
@@ -74,18 +71,25 @@ class lista(object):
         
     # EXIBE O CONTEÚDO DA LISTA
     def exibeLista(self):
+        
         aux = self.head
         str1 = []
         while aux != None:
             temp = []
             temp.append(aux.estado)
-            temp.append(aux.nivel)
+            temp.append(aux.v1)
+            if aux.pai!=None:
+                temp.append((aux.pai).estado)
+            else:
+                temp.append("nó raiz")
             str1.append(temp)
             aux = aux.proximo
+        
         return str1
     
     # EXIBE O CAMINHO ENCONTRADO
     def exibeCaminho(self):
+        
         atual = self.tail
         caminho = []
         
@@ -105,10 +109,9 @@ class lista(object):
             atual = atual.proximo
     
         caminho = []
-        if atual!=self.head:
+        atual = atual.pai
+        while atual.pai is not None:
+            caminho.append(atual.estado)
             atual = atual.pai
-            while atual.pai is not None:
-                caminho.append(atual.estado)
-                atual = atual.pai
         caminho.append(atual.estado)
         return caminho

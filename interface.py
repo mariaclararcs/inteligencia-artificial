@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from funcoes_auxiliares import Gera_Problema_Grid_Fixo
-from busca_sem_pesos_grid import busca  # Importa a classe de busca
+from principalBuscaSemPesosGrid import Gera_Problema
+from buscaGridNP import buscaGridNP  # Importa a classe de busca
 
 # Criar uma instância da classe busca
-buscador = busca()
+buscador = buscaGridNP()
 
 # Carregar a grid do arquivo
 mapa = Gera_Problema_Grid_Fixo("exemplo_grid.txt")
