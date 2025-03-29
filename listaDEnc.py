@@ -7,6 +7,7 @@ class listaDEnc(object):
     # INSERE NO INÍCIO DA LISTA
     def inserePrimeiro(self, st, v1, v2, p):
         novo_no = Node(p, st, v1, v2, None, None)
+        
         if self.head == None:
             self.tail = novo_no
             self.head = novo_no
@@ -17,7 +18,6 @@ class listaDEnc(object):
 
     # INSERE NO FIM DA LISTA
     def insereUltimo(self, st, v1, v2, p):
-
         novo_no = Node(p, st, v1, v2, None, None)
 
         if self.head is None:

@@ -14,6 +14,7 @@ def Gera_Problema(nx,ny,qtd):
             k+=1
     return mapa
 
+
 # PROGRAMA PRINCIPAL
 nx  = 10
 ny  = 10
