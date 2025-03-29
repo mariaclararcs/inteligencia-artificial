@@ -107,6 +107,33 @@ def desenhar_grid(matriz, caminho=[], inicio=None, fim=None):
 
 busca = buscaGridNP()
 
+# Função para verificar se existe um caminho alcançável entre o início e o objetivo
+def verificar_conexao(inicio, objetivo, nx, ny, matriz):
+    visitados = set()
+    fila = [inicio]
+    
+    while fila:
+        x, y = fila.pop(0)
+        
+        # Se o objetivo for encontrado
+        if (x, y) == objetivo:
+            return True
+        
+        if (x, y) in visitados:
+            continue
+        
+        visitados.add((x, y))
+        
+        # Verificar vizinhos (4 direções)
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+            
+            # Verificar se o vizinho está dentro dos limites da matriz e não é um obstáculo
+            if 0 <= nx < len(matriz) and 0 <= ny < len(matriz[0]) and matriz[ny][nx] != 9:
+                fila.append((nx, ny))
+    
+    return False
+
 # ---- Função para executar a busca ----
 def executar_busca():
     metodos_disponiveis = {
@@ -114,7 +141,7 @@ def executar_busca():
     "Profundidade": busca.profundidade,
     "Profundidade Limitada": busca.prof_limitada,
     "Aprofundamento Iterativo": busca.aprof_iterativo,
-    "Bidirecional": busca.bidirecional  # Caso tenha implementado
+    "Bidirecional": busca.bidirecional
     }
 
     try:
@@ -127,14 +154,38 @@ def executar_busca():
         
         if not matriz:
             return
+
+        nx, ny = len(matriz), len(matriz[0])  # Dimensões da matriz
+
+        # Verifica se as coordenadas estão dentro dos limites da matriz
+        if not (0 <= inicio_x < ny and 0 <= inicio_y < nx):
+            label_resultado.config(text="Erro: Coordenada de início fora do grid!", fg="red")
+            return
         
+        if not (0 <= objetivo_x < ny and 0 <= objetivo_y < nx):
+            label_resultado.config(text="Erro: Coordenada de objetivo fora do grid!", fg="red")
+            return
+
+        # Verifica se o início ou o objetivo são obstáculos
+        if matriz[inicio_y][inicio_x] == 9:
+            label_resultado.config(text="Erro: O ponto de início é um obstáculo!", fg="red")
+            return
+
+        if matriz[objetivo_y][objetivo_x] == 9:
+            label_resultado.config(text="Erro: O ponto de objetivo é um obstáculo!", fg="red")
+            return
+        
+        # Verificar se o caminho entre o início e o objetivo está bloqueado
+        if not verificar_conexao((inicio_x, inicio_y), (objetivo_x, objetivo_y), nx, ny, matriz):
+            label_resultado.config(text="Erro: O caminho entre o início e o objetivo está bloqueado por obstáculos!", fg="red")
+            return
+
         metodo = metodo_selecionado.get()
-        
+
         if metodo not in metodos_disponiveis:
             label_resultado.config(text="Selecione um método válido", fg="red")
             return
         
-        nx, ny = len(matriz), len(matriz[0])  # Dimensões da matriz
         inicio = [inicio_x, inicio_y]
         objetivo = [objetivo_x, objetivo_y]
 
@@ -147,9 +198,11 @@ def executar_busca():
             caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz)
 
         if caminho:
-            caminho = [(estado[0], estado[1]) for estado in caminho]  # Converte para tuplas
+            caminho = [(estado[0], estado[1]) for estado in caminho]
             desenhar_grid(matriz, caminho, inicio=tuple(inicio), fim=tuple(objetivo))
-            label_resultado.config(text="Caminho encontrado!", fg="green")
+
+            caminho_str = " > ".join([f"({x}, {y})" for x, y in caminho])
+            label_resultado.config(text=f"Caminho encontrado:\n{caminho_str}", fg="green")
         else:
             label_resultado.config(text="Nenhum caminho encontrado!", fg="red")
 
