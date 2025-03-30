@@ -47,7 +47,7 @@ metodo_selecionado = tk.StringVar()
 dropdown_metodo = ttk.Combobox(frame_inputs, textvariable=metodo_selecionado, values=metodos)
 dropdown_metodo.grid(row=7, column=0, columnspan=2, pady=5)
 
-# ---- Área direita (Grid e Texto) ----
+# ---- Área direita (Grid e Resultado) ----
 frame_grid = tk.Frame(frame_direita, bg="white")
 frame_grid.pack(expand=True, fill="both", padx=20, pady=20)
 
@@ -191,9 +191,9 @@ def executar_busca():
 
         # Chama a busca correspondente
         if metodo == "Profundidade Limitada":
-            caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz, 10)  # Limiar arbitrário 10
+            caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz, 10)  # Limite 10
         elif metodo == "Aprofundamento Iterativo":
-            caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz, 20)  # Profundidade máxima 20
+            caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz, 20)  # Profundidade 20
         else:
             caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz)
 
