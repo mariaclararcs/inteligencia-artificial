@@ -46,8 +46,8 @@ py interface.py
 Isso iniciará uma janela, e você poderá acessar o projeto.
 
 Para executar a busca:
-- Insira coordenadas **Início** válidas.
-- Insira coordenadas **Objetivo** válidas.
+- Insira coordenadas **Início** válidas nos campos (X e Y).
+- Insira coordenadas **Objetivo** válidas nos campos (X e Y).
 - Escolha um método de busca.
 - Clique em **Executar Busca**
 
