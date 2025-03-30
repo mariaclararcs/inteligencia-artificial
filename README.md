@@ -1,9 +1,9 @@
-# 📊 Busca de Rotas - Grid
+# 🔍 Busca de Rotas - Grid
 
 ### Cenário da atividade proposta
 Este projeto tem como objetivo aplicar algoritmos de busca em grafos para encontrar rotas dentro de um grid. A interface gráfica permite que o usuário defina pontos de início e destino, além de visualizar o caminho encontrado pelo algoritmo escolhido.
 
-### Métodos de Busca Implememntados
+### Métodos de Busca Implementados
 🔹 **Amplitude (BFS - Breadth-First Search)**
 Explora primeiro os nós mais próximos ao nó inicial, expandindo a busca em camadas. É garantido que encontra o caminho mais curto em grafos sem pesos.
 
