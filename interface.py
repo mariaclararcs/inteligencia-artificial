@@ -54,6 +54,10 @@ frame_grid.pack(expand=True, fill="both", padx=20, pady=20)
 # Canvas para desenhar a grid
 CELL_SIZE = 30  # Tamanho das células
 
+inicio_coord = None
+objetivo_coord = None
+selecionando_inicio = True  # Para alternar entre início e objetivo
+
 canvas = tk.Canvas(frame_grid, bg="white")
 canvas.pack(expand=True, fill="both")
 
@@ -101,13 +105,46 @@ def desenhar_grid(matriz, caminho=[], inicio=None, fim=None):
             canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, 
                                     (x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE, 
                                     fill=cor, outline="gray")
-                                
-    # Centralizando o canvas dentro do frame_grid
+                                 
     canvas.place(relx=0.5, rely=0.5, anchor="center")
+
+def selecionar_ponto(event):
+    global inicio_coord, objetivo_coord, selecionando_inicio
+
+    # Obter coordenadas clicadas no grid
+    x = event.x // CELL_SIZE
+    y = event.y // CELL_SIZE
+
+    matriz = carregar_matriz()
+    if not matriz:
+        return
+
+    # Evita selecionar um obstáculo como início ou objetivo
+    if matriz[y][x] == 9:
+        return
+
+    if selecionando_inicio:
+        inicio_coord = (x, y)
+        entry_InicioX.delete(0, tk.END)
+        entry_InicioX.insert(0, str(x))
+        entry_InicioY.delete(0, tk.END)
+        entry_InicioY.insert(0, str(y))
+    else:
+        objetivo_coord = (x, y)
+        entry_ObjetivoX.delete(0, tk.END)
+        entry_ObjetivoX.insert(0, str(x))
+        entry_ObjetivoY.delete(0, tk.END)
+        entry_ObjetivoY.insert(0, str(y))
+
+    # Alternar para selecionar o outro ponto na próxima vez
+    selecionando_inicio = not selecionando_inicio
+
+    # Redesenhar grid com os pontos atualizados
+    desenhar_grid(matriz, inicio=inicio_coord, fim=objetivo_coord)
 
 busca = buscaGridNP()
 
-# Função para verificar se existe um caminho alcançável entre o início e o objetivo
+# ---- Função para verificar se existe um caminho alcançável ----
 def verificar_conexao(inicio, objetivo, nx, ny, matriz):
     visitados = set()
     fila = [inicio]
@@ -217,4 +254,5 @@ btn_executar.grid(row=8, column=0, columnspan=2, pady=20)
 matriz_inicial = carregar_matriz()
 desenhar_grid(matriz_inicial)
 
+canvas.bind("<Button-1>", selecionar_ponto)
 janela.mainloop()
