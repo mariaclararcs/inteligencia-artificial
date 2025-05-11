@@ -3,76 +3,30 @@ from listaDEnc import listaDEnc
 class buscaGridNP(object):
     
     # SUCESSORES PARA GRID (LISTA DE ADJACENCIAS)
-    def sucessores(self,st,nx,ny,mapa):
-        
+    def sucessores(self, st, nx, ny, mapa):
         f = []
         x = st[0]
         y = st[1]
+    
+        # Verifique se as coordenadas estão dentro dos limites
+        if x < 0 or x >= nx or y < 0 or y >= ny:
+            return f
+    
+        # Direções possíveis (4 ou 8 conexões)
+        direcoes = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1,-1), (-1,1), (1,-1), (1,1)]  # Apenas movimentos ortogonais
+        # Para movimentos diagonais, adicione: (-1,-1), (-1,1), (1,-1), (1,1)
+    
+        for dx, dy in direcoes:
+            nx_pos = x + dx
+            ny_pos = y + dy
         
-        # ABAIXO
-        if x+1<nx:
-            if mapa[x+1][y]==0:
-                suc = []
-                suc.append(x+1)
-                suc.append(y)
-                f.append(suc)
-        
-        # ACIMA
-        if x-1>=0:
-            if mapa[x-1][y]==0:
-                suc = []
-                suc.append(x-1)
-                suc.append(y)
-                f.append(suc)
-        
-        # DIREITA
-        if y+1<ny:
-            if mapa[x][y+1]==0:
-                suc = []
-                suc.append(x)
-                suc.append(y+1)
-                f.append(suc)
-        
-        # ESQUERDA
-        if y-1>=0:
-            if mapa[x][y-1]==0:
-                suc = []
-                suc.append(x)
-                suc.append(y-1)
-                f.append(suc)
-        
-        # DIAGONAL INFERIOR DIREITA
-        if x+1<nx and y+1<ny:
-            if mapa[x+1][y+1]==0:
-                suc = []
-                suc.append(x+1)
-                suc.append(y+1)
-                f.append(suc)
-        
-        # DIAGONAL INFERIOR ESQUERDA
-        if x+1<nx and y-1>=0:
-            if mapa[x+1][y-1]==0:
-                suc = []
-                suc.append(x+1)
-                suc.append(y-1)
-                f.append(suc)
-        
-        # DIAGONAL SUPERIOR DIREITA
-        if x-1>=0 and y+1<ny:
-            if mapa[x-1][y+1]==0:
-                suc = []
-                suc.append(x-1)
-                suc.append(y+1)
-                f.append(suc)
-        
-        # DIAGONAL SUPERIOR ESQUERDA
-        if x-1>=0 and y-1>=0:
-            if mapa[x-1][y-1]==0:
-                suc = []
-                suc.append(x-1)
-                suc.append(y-1)
-                f.append(suc)
-                
+            # Verifique limites e obstáculos
+            if 0 <= nx_pos < nx and 0 <= ny_pos < ny:
+                # Verifique se é caminho livre (0) e não obstáculo (9)
+                if mapa[ny_pos][nx_pos] == 0:  # Note a inversão de ny_pos/nx_pos aqui
+                    suc = [nx_pos, ny_pos]
+                    f.append(suc)
+    
         return f
 #------------------------------------------------------------------------------    
     # CONTROLE DE NÓS REPETIDOS

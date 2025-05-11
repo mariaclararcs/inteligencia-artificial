@@ -49,6 +49,8 @@ Para executar a busca:
 - Insira coordenadas **Início** válidas nos campos (X e Y) ou clique em um ponto na grid.
 - Insira coordenadas **Objetivo** válidas nos campos (X e Y) ou clique em um ponto na grid.
 - Escolha um método de busca.
+- Caso o método for **Profundidade Limitada**, insira um valor para limite.
+- Caso o método for **Aprofundamento Iterativo**, insira um valor para profundidade máxima.
 - Clique em **Executar Busca**
 
 O campo de início será mostrado em amarelo, o objetivo em vermelho e o caminho encontrado será mostrado em verde. Também será mostrada as coordenadas do caminho encontrado.
