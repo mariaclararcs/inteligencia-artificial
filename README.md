@@ -21,16 +21,16 @@ Executa múltiplas buscas DFS com profundidade crescente até encontrar a soluç
 🔹 **Bidirecional**
 Realiza a busca simultaneamente a partir do início e do objetivo, reduzindo o espaço de busca necessário.
 
-🔹 **Custo Uniforme (Dijkstra)**
+🔹 **Custo Uniforme**
 Encontra o caminho com menor custo total, considerando diferentes pesos para cada movimento. Garante a solução ótima para grafos com pesos não-negativos.
 
 🔹 **Greedy (Melhor Primeiro)**
 Utiliza uma função heurística para estimar a distância até o objetivo, sempre expandindo o nó mais promissor. Não garante o caminho ótimo, mas geralmente é rápido.
 
-🔹 **A Estrela (A*)**
+🔹 **A Estrela**
 Combina o custo real do caminho com uma estimativa heurística do custo restante. Garante encontrar o caminho de menor custo se a heurística for admissível (não superestimar).
 
-🔹 **AIA Estrela (AIA*)**
+🔹 **AIA Estrela**
 Versão iterativa do A* que ajusta progressivamente o limite de custo. Combina as vantagens do Aprofundamento Iterativo com o A*, sendo eficiente em memória.
 
 ---
