@@ -1,6 +1,11 @@
 from listaDEnc import listaDEnc
+from busca_com_pesos import busca as busca_pesos
+import funcoes_auxiliares as fa
 
 class buscaGridNP(object):
+    
+    def __init__(self):
+        self.busca_pesos = busca_pesos()
     
     # SUCESSORES PARA GRID (LISTA DE ADJACENCIAS)
     def sucessores(self, st, nx, ny, mapa):
@@ -14,7 +19,6 @@ class buscaGridNP(object):
     
         # Direções possíveis (4 ou 8 conexões)
         direcoes = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1,-1), (-1,1), (1,-1), (1,1)]  # Apenas movimentos ortogonais
-        # Para movimentos diagonais, adicione: (-1,-1), (-1,1), (1,-1), (1,1)
     
         for dx, dy in direcoes:
             nx_pos = x + dx
@@ -28,23 +32,22 @@ class buscaGridNP(object):
                     f.append(suc)
     
         return f
-#------------------------------------------------------------------------------    
+
     # CONTROLE DE NÓS REPETIDOS
-    def verificaVisitado(self,novo,nivel,visitado):
+    def verificaVisitado(self, novo, nivel, visitado):
         flag = True
         # controle de nós repetidos
         for aux in visitado:
-            if aux[0]==novo:
-                if aux[1]<=(nivel+1):
+            if aux[0] == novo:
+                if aux[1] <= (nivel + 1):
                     flag = False
                 else:
-                    aux[1]=nivel+1
+                    aux[1] = nivel + 1
                 break
         return flag
-#------------------------------------------------------------------------------
-    # BUSCA EM AMPLITUDE
-    def amplitude(self,inicio,fim,nx,ny,mapa):
 
+    # BUSCA EM AMPLITUDE
+    def amplitude(self, inicio, fim, nx, ny, mapa):
         # manipular a FILA para a busca
         l1 = listaDEnc()
 
@@ -52,8 +55,8 @@ class buscaGridNP(object):
         l2 = listaDEnc()
 
         # insere ponto inicial como nó raiz da árvore
-        l1.insereUltimo(inicio,0,0,None)
-        l2.insereUltimo(inicio,0,0,None)
+        l1.insereUltimo(inicio, 0, 0, None)
+        l2.insereUltimo(inicio, 0, 0, None)
 
         # controle de nós visitados
         visitado = []
@@ -66,37 +69,35 @@ class buscaGridNP(object):
             # remove o primeiro da fila
             atual = l1.deletaPrimeiro()
             
-            filhos = self.sucessores(atual.estado,nx,ny,mapa)
+            filhos = self.sucessores(atual.estado, nx, ny, mapa)
 
             # varre todos as conexões dentro do grafo a partir de atual
             for novo in filhos:
 
                 # verifica se foi visitado
-                flag = self.verificaVisitado(novo,atual.v1,visitado)
+                flag = self.verificaVisitado(novo, atual.v1, visitado)
 
                 # se não foi visitado inclui na fila
                 if flag:
-                    l1.insereUltimo(novo,atual.v1+1,0,atual)
-                    l2.insereUltimo(novo,atual.v1+1,0,atual)
+                    l1.insereUltimo(novo, atual.v1 + 1, 0, atual)
+                    l2.insereUltimo(novo, atual.v1 + 1, 0, atual)
 
                     # marca como visitado
                     linha = []
                     linha.append(novo)
-                    linha.append(atual.v1+1)
+                    linha.append(atual.v1 + 1)
                     visitado.append(linha)
 
                     # verifica se é o objetivo
                     if novo == fim:
                         caminho = []
                         caminho += l2.exibeCaminho()
-                        #print("\nFila:\n",l1.exibeLista())
-                        #print("\nÁrvore de busca:\n",l2.exibeLista())
                         return caminho
 
         return None
-#------------------------------------------------------------------------------
+
     # BUSCA EM PROFUNDIDADE
-    def profundidade(self,inicio,fim,nx,ny,mapa):
+    def profundidade(self, inicio, fim, nx, ny, mapa):
         # manipular a PILHA para a busca
         l1 = listaDEnc()
 
@@ -104,8 +105,8 @@ class buscaGridNP(object):
         l2 = listaDEnc()
 
         # insere ponto inicial como nó raiz da árvore
-        l1.insereUltimo(inicio,0,0,None)
-        l2.insereUltimo(inicio,0,0,None)
+        l1.insereUltimo(inicio, 0, 0, None)
+        l2.insereUltimo(inicio, 0, 0, None)
 
         # controle de nós visitados
         visitado = []
@@ -118,37 +119,35 @@ class buscaGridNP(object):
             # remove o último da PILHA
             atual = l1.deletaUltimo()
             
-            filhos = self.sucessores(atual.estado,nx,ny,mapa)
+            filhos = self.sucessores(atual.estado, nx, ny, mapa)
 
             # varre todos as conexões dentro do grafo a partir de atual
             for novo in filhos:
 
                 # verifica se foi visitado
-                flag = self.verificaVisitado(novo,atual.v1,visitado)
+                flag = self.verificaVisitado(novo, atual.v1, visitado)
 
                 # se não foi visitado inclui na fila
                 if flag:
-                    l1.insereUltimo(novo,atual.v1+1,0,atual)
-                    l2.insereUltimo(novo,atual.v1+1,0,atual)
+                    l1.insereUltimo(novo, atual.v1 + 1, 0, atual)
+                    l2.insereUltimo(novo, atual.v1 + 1, 0, atual)
 
                     # marca como visitado
                     linha = []
                     linha.append(novo)
-                    linha.append(atual.v1+1)
+                    linha.append(atual.v1 + 1)
                     visitado.append(linha)
 
                     # verifica se é o objetivo
                     if novo == fim:
                         caminho = []
                         caminho += l2.exibeCaminho()
-                        #print("\nFila:\n",l1.exibeLista())
-                        #print("\nÁrvore de busca:\n",l2.exibeLista())
                         return caminho
 
         return None
-#------------------------------------------------------------------------------
+
     # BUSCA EM PROFUNDIDADE LIMITADA
-    def prof_limitada(self,inicio,fim,nx,ny,mapa,lim):
+    def prof_limitada(self, inicio, fim, nx, ny, mapa, lim):
         # manipular a PILHA para a busca
         l1 = listaDEnc()
 
@@ -156,8 +155,8 @@ class buscaGridNP(object):
         l2 = listaDEnc()
 
         # insere ponto inicial como nó raiz da árvore
-        l1.insereUltimo(inicio,0,0,None)
-        l2.insereUltimo(inicio,0,0,None)
+        l1.insereUltimo(inicio, 0, 0, None)
+        l2.insereUltimo(inicio, 0, 0, None)
 
         # controle de nós visitados
         visitado = []
@@ -169,38 +168,37 @@ class buscaGridNP(object):
         while l1.vazio() == False:
             # remove o último da PILHA
             atual = l1.deletaUltimo()
-            if atual.v1<lim:
-                filhos = self.sucessores(atual.estado,nx,ny,mapa)
+            if atual.v1 < lim:
+                filhos = self.sucessores(atual.estado, nx, ny, mapa)
     
                 # varre todos as conexões dentro do grafo a partir de atual
                 for novo in filhos:
     
                     # verifica se foi visitado
-                    flag = self.verificaVisitado(novo,atual.v1,visitado)
+                    flag = self.verificaVisitado(novo, atual.v1, visitado)
     
                     # se não foi visitado inclui na fila
                     if flag:
-                        l1.insereUltimo(novo,atual.v1+1,0,atual)
-                        l2.insereUltimo(novo,atual.v1+1,0,atual)
+                        l1.insereUltimo(novo, atual.v1 + 1, 0, atual)
+                        l2.insereUltimo(novo, atual.v1 + 1, 0, atual)
     
                         # marca como visitado
                         linha = []
                         linha.append(novo)
-                        linha.append(atual.v1+1)
+                        linha.append(atual.v1 + 1)
                         visitado.append(linha)
     
                         # verifica se é o objetivo
                         if novo == fim:
                             caminho = []
                             caminho += l2.exibeCaminho()
-                            #print("\nFila:\n",l1.exibeLista())
-                            #print("\nÁrvore de busca:\n",l2.exibeLista())
                             return caminho
 
         return None    
+
     # BUSCA EM APROFUDAMENTO ITERATIVO
-    def aprof_iterativo(self,inicio,fim,nx,ny,mapa,l_max):
-        for lim in range(1,l_max):
+    def aprof_iterativo(self, inicio, fim, nx, ny, mapa, l_max):
+        for lim in range(1, l_max):
             # manipular a PILHA para a busca
             l1 = listaDEnc()
     
@@ -208,8 +206,8 @@ class buscaGridNP(object):
             l2 = listaDEnc()
     
             # insere ponto inicial como nó raiz da árvore
-            l1.insereUltimo(inicio,0,0,None)
-            l2.insereUltimo(inicio,0,0,None)
+            l1.insereUltimo(inicio, 0, 0, None)
+            l2.insereUltimo(inicio, 0, 0, None)
     
             # controle de nós visitados
             visitado = []
@@ -221,38 +219,36 @@ class buscaGridNP(object):
             while l1.vazio() == False:
                 # remove o último da PILHA
                 atual = l1.deletaUltimo()
-                if atual.v1<lim:
-                    filhos = self.sucessores(atual.estado,nx,ny,mapa)
+                if atual.v1 < lim:
+                    filhos = self.sucessores(atual.estado, nx, ny, mapa)
         
                     # varre todos as conexões dentro do grafo a partir de atual
                     for novo in filhos:
         
                         # verifica se foi visitado
-                        flag = self.verificaVisitado(novo,atual.v1,visitado)
+                        flag = self.verificaVisitado(novo, atual.v1, visitado)
         
                         # se não foi visitado inclui na fila
                         if flag:
-                            l1.insereUltimo(novo,atual.v1+1,0,atual)
-                            l2.insereUltimo(novo,atual.v1+1,0,atual)
+                            l1.insereUltimo(novo, atual.v1 + 1, 0, atual)
+                            l2.insereUltimo(novo, atual.v1 + 1, 0, atual)
         
                             # marca como visitado
                             linha = []
                             linha.append(novo)
-                            linha.append(atual.v1+1)
+                            linha.append(atual.v1 + 1)
                             visitado.append(linha)
         
                             # verifica se é o objetivo
                             if novo == fim:
                                 caminho = []
                                 caminho += l2.exibeCaminho()
-                                #print("\nFila:\n",l1.exibeLista())
-                                #print("\nÁrvore de busca:\n",l2.exibeLista())
                                 return caminho
 
         return None    
-#------------------------------------------------------------------------------
+
     # BUSCA BIDIRECIONAL
-    def bidirecional(self,inicio,fim,nx,ny,mapa):
+    def bidirecional(self, inicio, fim, nx, ny, mapa):
         # Primeiro Amplitude"
         # Manipular a FILA para a busca
         l1 = listaDEnc()
@@ -266,11 +262,11 @@ class buscaGridNP(object):
         l4 = listaDEnc()
     
         # insere ponto inicial como nó raiz da árvore
-        l1.insereUltimo(inicio,0,0,None)
-        l2.insereUltimo(inicio,0,0,None)
+        l1.insereUltimo(inicio, 0, 0, None)
+        l2.insereUltimo(inicio, 0, 0, None)
         
-        l3.insereUltimo(fim,0,0,None)
-        l4.insereUltimo(fim,0,0,None)
+        l3.insereUltimo(fim, 0, 0, None)
+        l4.insereUltimo(fim, 0, 0, None)
         
         # controle de nós visitados
         visitado1 = []
@@ -286,42 +282,39 @@ class buscaGridNP(object):
         visitado2.append(linha)
         
         ni = 0
-        while l1.vazio()==False or l3.vazio()==False:
+        while l1.vazio() == False or l3.vazio() == False:
             
             while l1.vazio() == False:
                 
                 # para ir para o próximo amplitude
-                if ni!=l1.primeiro().v1:
+                if ni != l1.primeiro().v1:
                     break
                     
                 # remove o primeiro da fila
                 atual = l1.deletaPrimeiro()
         
-                filhos = self.sucessores(atual.estado,nx,ny,mapa)
+                filhos = self.sucessores(atual.estado, nx, ny, mapa)
         
                 # varre todos as conexões dentro do grafo a partir de atual
                 for novo in filhos:
         
                     # pressuponho que não foi visitado
-                    flag = self.verificaVisitado(novo,atual.v1+1,visitado1)
+                    flag = self.verificaVisitado(novo, atual.v1 + 1, visitado1)
                     # se não foi visitado inclui na fila
                     if flag:
-                        l1.insereUltimo(novo,atual.v1+1,0,atual)
-                        l2.insereUltimo(novo,atual.v1+1,0,atual)
+                        l1.insereUltimo(novo, atual.v1 + 1, 0, atual)
+                        l2.insereUltimo(novo, atual.v1 + 1, 0, atual)
         
                         # marca como visitado
                         linha = []
                         linha.append(novo)
-                        linha.append(atual.v1+1)
+                        linha.append(atual.v1 + 1)
                         visitado1.append(linha)
         
                         # verifica se é o objetivo
-                        flag = not(self.verificaVisitado(novo,atual.v1+1,visitado2))
+                        flag = not(self.verificaVisitado(novo, atual.v1 + 1, visitado2))
                         if flag:
                             caminho = []
-                            #print("Fila:\n",l1.exibeLista())
-                            #print("\nÁrvore de busca:\n",l2.exibeLista())
-                            #print("\nÁrvore de busca:\n",l4.exibeLista())
                             caminho += l2.exibeCaminho()
                             caminho += l4.exibeCaminho1(novo)
                             return caminho
@@ -329,41 +322,65 @@ class buscaGridNP(object):
             while l3.vazio() == False:
                 
                 # para ir para o próximo amplitude
-                if ni!= l3.primeiro().v1:
+                if ni != l3.primeiro().v1:
                     break
                 
                 # remove o primeiro da fila
                 atual = l3.deletaPrimeiro()
         
-                filhos = self.sucessores(atual.estado,nx,ny,mapa)
+                filhos = self.sucessores(atual.estado, nx, ny, mapa)
         
                 # varre todos as conexões dentro do grafo a partir de atual
                 for novo in filhos:
         
                     # pressuponho que não foi visitado
-                    flag = self.verificaVisitado(novo,atual.v1+1,visitado2)
+                    flag = self.verificaVisitado(novo, atual.v1 + 1, visitado2)
                     # se não foi visitado inclui na fila
                     if flag:
-                        l3.insereUltimo(novo,atual.v1+1,0,atual)
-                        l4.insereUltimo(novo,atual.v1+1,0,atual)
+                        l3.insereUltimo(novo, atual.v1 + 1, 0, atual)
+                        l4.insereUltimo(novo, atual.v1 + 1, 0, atual)
         
                         # marca como visitado
                         linha = []
                         linha.append(novo)
-                        linha.append(atual.v1+1)
+                        linha.append(atual.v1 + 1)
                         visitado2.append(linha)
         
                         # verifica se é o objetivo
-                        flag = not(self.verificaVisitado(novo,atual.v1+1,visitado1))
+                        flag = not(self.verificaVisitado(novo, atual.v1 + 1, visitado1))
                         if flag:
                             caminho = []
-                            #print("Fila:\n",l3.exibeLista())
-                            #print("\nÁrvore de busca:\n",l4.exibeLista())
-                            #print("\nÁrvore de busca:\n",l2.exibeLista())
                             caminho += l4.exibeCaminho()
                             caminho += l2.exibeCaminho1(novo)
                             return caminho[::-1]
                             
             ni += 1
     
-        return "caminho não encontrado"
+        return None
+
+    def _converter_coordenadas(self, caminho):
+        # Converte coordenadas [x,y] para (x,y)
+        return [(estado[0], estado[1]) for estado in caminho] if caminho else None
+    
+    def custo_uniforme(self, inicio, objetivo, nx, ny, matriz):
+        # Cria cópia do mapa convertendo 9 para 1 (obstáculo) e 0 para 0 (livre)
+        mapa_pesos = [[0 if cell == 0 else 1 for cell in row] for row in matriz]
+        caminho, _ = self.busca_pesos.custo_uniforme(inicio, objetivo, mapa_pesos, nx, ny)
+        return self._converter_coordenadas(caminho)
+    
+    def greedy(self, inicio, objetivo, nx, ny, matriz):
+        mapa_pesos = [[0 if cell == 0 else 1 for cell in row] for row in matriz]
+        caminho, _ = self.busca_pesos.greedy(inicio, objetivo, mapa_pesos, nx, ny)
+        return self._converter_coordenadas(caminho)
+    
+    def a_estrela(self, inicio, objetivo, nx, ny, matriz):
+        mapa_pesos = [[0 if cell == 0 else 1 for cell in row] for row in matriz]
+        caminho, _ = self.busca_pesos.a_estrela(inicio, objetivo, mapa_pesos, nx, ny)
+        return self._converter_coordenadas(caminho)
+    
+    def aia_estrela(self, inicio, objetivo, nx, ny, matriz, limite=None):
+        mapa_pesos = [[0 if cell == 0 else 1 for cell in row] for row in matriz]
+        if limite is None:
+            limite = fa.h(inicio, objetivo)
+        caminho, _ = self.busca_pesos.aia_estrela(inicio, objetivo, mapa_pesos, nx, ny, limite)
+        return self._converter_coordenadas(caminho)

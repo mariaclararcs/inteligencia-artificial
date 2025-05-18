@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from buscaGridNP import buscaGridNP
+from busca_sem_pesos import buscaGridNP
 
 # Criar a janela principal
 janela = tk.Tk()
@@ -83,7 +83,7 @@ entry_ObjetivoY.grid(row=5, column=1, pady=5)
 
 # Dropdown para escolher o método de busca
 tk.Label(frame_inputs, text="Métodos:", font=("Arial", 12, "bold")).grid(row=6, column=0, columnspan=2, pady=10)
-metodos = ["Amplitude", "Profundidade", "Profundidade Limitada", "Aprofundamento Iterativo", "Bidirecional"]
+metodos = ["Amplitude", "Profundidade", "Profundidade Limitada", "Aprofundamento Iterativo", "Bidirecional", "Custo Uniforme", "Greedy", "A Estrela", "AIA Estrela"]
 metodo_selecionado = tk.StringVar()
 dropdown_metodo = ttk.Combobox(frame_inputs, textvariable=metodo_selecionado, values=metodos)
 dropdown_metodo.grid(row=7, column=0, columnspan=2, pady=5)
@@ -254,7 +254,11 @@ def executar_busca():
         "Profundidade": busca.profundidade,
         "Profundidade Limitada": busca.prof_limitada,
         "Aprofundamento Iterativo": busca.aprof_iterativo,
-        "Bidirecional": busca.bidirecional
+        "Bidirecional": busca.bidirecional,
+        "Custo Uniforme": busca.custo_uniforme,
+        "Greedy": busca.greedy,
+        "A Estrela": busca.a_estrela,
+        "AIA Estrela": busca.aia_estrela
     }
 
     try:
@@ -330,6 +334,17 @@ def executar_busca():
             except ValueError:
                 text_resultado.insert(tk.END, "Erro: A profundidade máxima deve ser um número inteiro!", "error")
                 return
+        elif metodo == "AIA Estrela":
+            if not entry_limite:
+                # Usa heurística como limite padrão se não for fornecido
+                limite = None
+            else:
+                try:
+                    limite = int(entry_limite.get())
+                except ValueError:
+                    text_resultado.insert(tk.END, "Erro: O limite deve ser um número inteiro!", "error")
+                    return
+            caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz, limite)
         else:
             caminho = metodos_disponiveis[metodo](inicio, objetivo, nx, ny, matriz)
 
